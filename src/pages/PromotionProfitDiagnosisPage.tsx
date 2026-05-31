@@ -212,7 +212,7 @@ export function PromotionProfitDiagnosisPage({
 
       <ChartCard
         title="利润拆账：销售额最后被哪些成本吃掉？"
-        description="把原始销售额拆成折扣让利、商品成本、营销支出、物流成本和最终利润，展示促销利润被压缩的过程。"
+        description="从总销售额开始，依次扣除折扣让利、商品成本、营销支出和物流成本，最后剩下的才是实际利润。图中的负数项表示被扣掉的金额。"
         extra={
           <Select
             placeholder="选择折扣区间"

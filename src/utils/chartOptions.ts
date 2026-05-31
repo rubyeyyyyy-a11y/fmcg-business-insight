@@ -331,44 +331,135 @@ export function buildPromotionProfitEfficiencyOption(rows: AggregatedRow[]): ECh
 }
 
 export function buildPromotionCostWaterfallOption(row: AggregatedRow): EChartsOption {
-  const categories = ['总销售额', '折扣让利', '商品成本', '营销支出', '物流成本', '利润'];
-  const firstRemaining = row.grossSalesUsd - row.discountLossUsd;
-  const secondRemaining = firstRemaining - row.cogsUsd;
-  const thirdRemaining = secondRemaining - row.marketingSpendUsd;
-  const fourthRemaining = thirdRemaining - row.logisticsCostUsd;
+  const categories = ['总销售额', '折扣让利', '商品成本', '营销支出', '物流成本', '最终利润'];
+  const grossSales = row.grossSalesUsd;
+  const discountLoss = row.discountLossUsd;
+  const cogs = row.cogsUsd;
+  const marketing = row.marketingSpendUsd;
+  const logistics = row.logisticsCostUsd;
+  const profit = row.profitUsd;
+  const afterDiscount = grossSales - discountLoss;
+  const afterCogs = afterDiscount - cogs;
+  const afterMarketing = afterCogs - marketing;
+  const afterLogistics = afterMarketing - logistics;
+
+  const waterfallItems: Array<{
+    category: string;
+    legendLabel: string;
+    metric: MetricKey;
+    value: number;
+    base: number;
+    color: string;
+    isDeduction: boolean;
+  }> = [
+    {
+      category: '总销售额',
+      legendLabel: '总销售额',
+      metric: 'grossSalesUsd',
+      value: grossSales,
+      base: 0,
+      color: '#2563eb',
+      isDeduction: false,
+    },
+    {
+      category: '折扣让利',
+      legendLabel: '- 折扣让利',
+      metric: 'discountLossUsd',
+      value: discountLoss,
+      base: afterDiscount,
+      color: '#f59e0b',
+      isDeduction: true,
+    },
+    {
+      category: '商品成本',
+      legendLabel: '- 商品成本',
+      metric: 'cogsUsd',
+      value: cogs,
+      base: afterCogs,
+      color: '#64748b',
+      isDeduction: true,
+    },
+    {
+      category: '营销支出',
+      legendLabel: '- 营销支出',
+      metric: 'marketingSpendUsd',
+      value: marketing,
+      base: afterMarketing,
+      color: '#f97316',
+      isDeduction: true,
+    },
+    {
+      category: '物流成本',
+      legendLabel: '- 物流成本',
+      metric: 'logisticsCostUsd',
+      value: logistics,
+      base: afterLogistics,
+      color: '#06b6d4',
+      isDeduction: true,
+    },
+    {
+      category: '最终利润',
+      legendLabel: '最终利润',
+      metric: 'profitUsd',
+      value: profit,
+      base: 0,
+      color: profit >= 0 ? '#16a34a' : '#dc2626',
+      isDeduction: false,
+    },
+  ];
+
+  const helperData = waterfallItems.map((item) => item.base);
+  const maxAbsValue = Math.max(...waterfallItems.map((item) => Math.abs(item.value)), 0);
+
+  function formatWaterfallAmount(metric: MetricKey, value: number, isDeduction: boolean) {
+    if (value === 0) {
+      return '$0.00';
+    }
+
+    const formatted = formatMetricValue(metric, Math.abs(value));
+    return isDeduction ? `-${formatted}` : value < 0 ? `-${formatted}` : formatted;
+  }
 
   return {
-    color: ['#2563eb', '#f59e0b', '#64748b', '#f97316', '#06b6d4', '#16a34a'],
     tooltip: {
       trigger: 'item',
       formatter: (params: any) => {
-        const dataValue = Array.isArray(params.value)
-          ? Number(params.value[0] ?? 0)
-          : Number(params.value ?? 0);
-        const value = params.seriesName === '辅助' ? 0 : dataValue;
-        const metricMap: Record<string, MetricKey> = {
-          总销售额: 'grossSalesUsd',
-          折扣让利: 'discountLossUsd',
-          商品成本: 'cogsUsd',
-          营销支出: 'marketingSpendUsd',
-          物流成本: 'logisticsCostUsd',
-          利润: 'profitUsd',
-        };
-        const metric = metricMap[params.name] ?? 'profitUsd';
-        const prefix = params.name === '总销售额' || params.name === '利润' ? '' : '-';
-        return `${params.name}<br/>${prefix}${formatMetricValue(metric, Math.abs(value))}`;
+        if (params.seriesName === '辅助') {
+          return '';
+        }
+
+        const data = params.data as { value: number; metric: MetricKey; isDeduction: boolean };
+        const value = Number(data?.value ?? 0);
+        const metric = data?.metric ?? 'profitUsd';
+        const isDeduction = Boolean(data?.isDeduction);
+
+        return `${params.seriesName}<br/>${formatWaterfallAmount(metric, value, isDeduction)}`;
       },
     },
     legend: {
       top: 12,
-      data: categories,
+      data: waterfallItems.map((item) => item.legendLabel),
     },
-    grid: buildCommonGrid(),
+    grid: {
+      ...buildCommonGrid(),
+      bottom: 56,
+    },
     xAxis: {
       type: 'category',
       data: categories,
+      axisTick: {
+        alignWithLabel: true,
+      },
       axisLabel: {
         interval: 0,
+        align: 'center',
+        margin: 14,
+        formatter: (value: string) => {
+          if (value === '最终利润') {
+            return '最终\n利润';
+          }
+          return value;
+        },
       },
     },
     yAxis: {
@@ -381,8 +472,12 @@ export function buildPromotionCostWaterfallOption(row: AggregatedRow): EChartsOp
       {
         name: '辅助',
         type: 'bar',
-        stack: 'total',
+        stack: 'waterfall',
         silent: true,
+        barMaxWidth: 44,
+        tooltip: {
+          show: false,
+        },
         itemStyle: {
           color: 'transparent',
           borderColor: 'transparent',
@@ -390,53 +485,36 @@ export function buildPromotionCostWaterfallOption(row: AggregatedRow): EChartsOp
         emphasis: {
           disabled: true,
         },
-        data: [0, firstRemaining, secondRemaining, thirdRemaining, fourthRemaining, 0],
+        data: helperData,
       },
-      {
-        name: '总销售额',
-        type: 'bar',
-        stack: 'total',
-        barMaxWidth: 44,
-        data: [row.grossSalesUsd, '-', '-', '-', '-', '-'],
-      },
-      {
-        name: '折扣让利',
-        type: 'bar',
-        stack: 'total',
-        barMaxWidth: 44,
-        data: ['-', row.discountLossUsd, '-', '-', '-', '-'],
-      },
-      {
-        name: '商品成本',
-        type: 'bar',
-        stack: 'total',
-        barMaxWidth: 44,
-        data: ['-', '-', row.cogsUsd, '-', '-', '-'],
-      },
-      {
-        name: '营销支出',
-        type: 'bar',
-        stack: 'total',
-        barMaxWidth: 44,
-        data: ['-', '-', '-', row.marketingSpendUsd, '-', '-'],
-      },
-      {
-        name: '物流成本',
-        type: 'bar',
-        stack: 'total',
-        barMaxWidth: 44,
-        data: ['-', '-', '-', '-', row.logisticsCostUsd, '-'],
-      },
-      {
-        name: '利润',
-        type: 'bar',
-        stack: 'profit',
+      ...waterfallItems.map((item, index) => ({
+        name: item.legendLabel,
+        type: 'bar' as const,
+        stack: 'waterfall',
         barMaxWidth: 44,
         itemStyle: {
-          color: row.profitUsd >= 0 ? '#16a34a' : '#dc2626',
+          color: item.color,
         },
-        data: ['-', '-', '-', '-', '-', row.profitUsd],
-      },
+        label: {
+          show: Math.abs(item.value) > maxAbsValue * 0.04 || item.value === 0,
+          position: 'top' as const,
+          distance: 8,
+          color: '#172033',
+          fontSize: 12,
+          formatter: () => formatWaterfallAmount(item.metric, item.value, item.isDeduction),
+        },
+        data: categories.map((category, categoryIndex) => {
+          if (categoryIndex !== index || category !== item.category) {
+            return '-';
+          }
+
+          return {
+            value: item.value,
+            metric: item.metric,
+            isDeduction: item.isDeduction,
+          };
+        }),
+      })),
     ],
   };
 }
