@@ -6,6 +6,7 @@ import { BusinessDimensionPage } from './pages/BusinessDimensionPage';
 import { DataExplorerPage } from './pages/DataExplorerPage';
 import { OverviewPage } from './pages/OverviewPage';
 import { PromotionAnalysisPage } from './pages/PromotionAnalysisPage';
+import { PromotionProfitDiagnosisPage } from './pages/PromotionProfitDiagnosisPage';
 import type { PageKey } from './types/fmcg';
 
 const { Content } = Layout;
@@ -18,6 +19,8 @@ function App() {
 
   if (activePage === 'promotion') {
     pageContent = <PromotionAnalysisPage rows={rows} options={options} />;
+  } else if (activePage === 'promotionProfit') {
+    pageContent = <PromotionProfitDiagnosisPage rows={rows} options={options} />;
   } else if (activePage === 'business') {
     pageContent = <BusinessDimensionPage rows={rows} options={options} />;
   } else if (activePage === 'explorer') {

@@ -1,4 +1,10 @@
-import { BarChartOutlined, DashboardOutlined, FundOutlined, LineChartOutlined } from '@ant-design/icons';
+import {
+  BarChartOutlined,
+  DashboardOutlined,
+  DollarCircleOutlined,
+  FundOutlined,
+  LineChartOutlined,
+} from '@ant-design/icons';
 import { Button, Layout, Space, Typography } from 'antd';
 import type { ReactNode } from 'react';
 import type { PageKey } from '../types/fmcg';
@@ -14,6 +20,7 @@ interface AppHeaderProps {
 const NAV_ITEMS: Array<{ key: PageKey; label: string; icon: ReactNode }> = [
   { key: 'overview', label: '首页概览', icon: <DashboardOutlined /> },
   { key: 'promotion', label: '促销分析', icon: <LineChartOutlined /> },
+  { key: 'promotionProfit', label: '促销利润诊断', icon: <DollarCircleOutlined /> },
   { key: 'business', label: '业务维度分析', icon: <FundOutlined /> },
   { key: 'explorer', label: '数据探索器', icon: <BarChartOutlined /> },
 ];

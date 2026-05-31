@@ -25,8 +25,16 @@ export function formatPercent(value: number): string {
   return `${value.toFixed(2)}%`;
 }
 
+export function formatRatio(value: number): string {
+  return `${value.toFixed(2)}x`;
+}
+
 export function formatMetricValue(metric: MetricKey, value: number): string {
   const config = METRIC_CONFIG_MAP[metric];
+
+  if (metric === 'promoRoi' || metric === 'marketingRoi') {
+    return formatRatio(value);
+  }
 
   switch (config.valueType) {
     case 'currency':

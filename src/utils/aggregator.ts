@@ -17,9 +17,18 @@ function createSeed(dimension: string): AggregatedRow & { profitMarginSum: numbe
     grossSalesUsd: 0,
     netRevenueUsd: 0,
     profitUsd: 0,
+    discountLossUsd: 0,
+    promoInvestmentUsd: 0,
+    promoRoi: 0,
+    marketingRoi: 0,
+    revenueToProfitRate: 0,
     marketingSpendUsd: 0,
     cogsUsd: 0,
     logisticsCostUsd: 0,
+    cogsRatio: 0,
+    marketingSpendRatio: 0,
+    logisticsCostRatio: 0,
+    profitPerUnit: 0,
     avgUnitsSold: 0,
     avgNetRevenueUsd: 0,
     avgProfitUsd: 0,
@@ -33,6 +42,17 @@ function finalizeSeed(seed: AggregatedRow & { profitMarginSum: number }): Aggreg
   const orders = seed.orders || 1;
   const avgProfitMarginPct = seed.orders === 0 ? 0 : seed.profitMarginSum / seed.orders;
   const totalProfitMarginPct = seed.netRevenueUsd === 0 ? 0 : (seed.profitUsd / seed.netRevenueUsd) * 100;
+  const discountLossUsd = seed.grossSalesUsd - seed.netRevenueUsd;
+  const promoInvestmentUsd = discountLossUsd + seed.marketingSpendUsd;
+  const promoRoi = promoInvestmentUsd === 0 ? 0 : seed.profitUsd / promoInvestmentUsd;
+  const marketingRoi = seed.marketingSpendUsd === 0 ? 0 : seed.profitUsd / seed.marketingSpendUsd;
+  const revenueToProfitRate = seed.grossSalesUsd === 0 ? 0 : (seed.profitUsd / seed.grossSalesUsd) * 100;
+  const cogsRatio = seed.netRevenueUsd === 0 ? 0 : (seed.cogsUsd / seed.netRevenueUsd) * 100;
+  const marketingSpendRatio =
+    seed.netRevenueUsd === 0 ? 0 : (seed.marketingSpendUsd / seed.netRevenueUsd) * 100;
+  const logisticsCostRatio =
+    seed.netRevenueUsd === 0 ? 0 : (seed.logisticsCostUsd / seed.netRevenueUsd) * 100;
+  const profitPerUnit = seed.unitsSold === 0 ? 0 : seed.profitUsd / seed.unitsSold;
 
   return {
     dimension: seed.dimension,
@@ -41,9 +61,18 @@ function finalizeSeed(seed: AggregatedRow & { profitMarginSum: number }): Aggreg
     grossSalesUsd: seed.grossSalesUsd,
     netRevenueUsd: seed.netRevenueUsd,
     profitUsd: seed.profitUsd,
+    discountLossUsd,
+    promoInvestmentUsd,
+    promoRoi,
+    marketingRoi,
+    revenueToProfitRate,
     marketingSpendUsd: seed.marketingSpendUsd,
     cogsUsd: seed.cogsUsd,
     logisticsCostUsd: seed.logisticsCostUsd,
+    cogsRatio,
+    marketingSpendRatio,
+    logisticsCostRatio,
+    profitPerUnit,
     avgUnitsSold: seed.unitsSold / orders,
     avgNetRevenueUsd: seed.netRevenueUsd / orders,
     avgProfitUsd: seed.profitUsd / orders,
