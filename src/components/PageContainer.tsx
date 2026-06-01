@@ -5,7 +5,7 @@ const { Title, Paragraph } = Typography;
 
 interface PageContainerProps {
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }
 
@@ -14,7 +14,7 @@ export function PageContainer({ title, description, children }: PageContainerPro
     <section className="page-container">
       <div className="page-container__intro">
         <Title level={2}>{title}</Title>
-        <Paragraph>{description}</Paragraph>
+        {description ? <Paragraph>{description}</Paragraph> : null}
       </div>
       {children}
     </section>

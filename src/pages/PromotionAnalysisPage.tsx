@@ -36,15 +36,11 @@ export function PromotionAnalysisPage({ rows, options }: PromotionAnalysisPagePr
   );
 
   return (
-    <PageContainer
-      title="促销分析"
-      description="观察折扣区间与销量、收入、利润之间的关系，帮助讨论促销策略与盈利之间的平衡。"
-    >
+    <PageContainer title="促销分析">
       <FilterBar filters={filters} options={options} onChange={setFilters} />
 
       <ChartCard
-        title="折扣区间影响分析"
-        description="切换不同指标，比较折扣力度变化对平均业务表现的影响。"
+        title="折扣区间表现"
         extra={
           <Segmented
             options={PROMOTION_METRICS}
@@ -56,7 +52,7 @@ export function PromotionAnalysisPage({ rows, options }: PromotionAnalysisPagePr
         <EChart option={buildMetricBarOption(discountRows, metric)} />
       </ChartCard>
 
-      <ChartCard title="折扣区间聚合数据表" description="表格和图表使用同一批筛选后的原始订单动态聚合。">
+      <ChartCard title="折扣区间聚合数据">
         <AggregatedDataTable rows={discountRows} pageSize={10} />
       </ChartCard>
 

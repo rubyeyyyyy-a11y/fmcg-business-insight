@@ -19,30 +19,27 @@ export function OverviewPage({ rows }: OverviewPageProps) {
   const annualRows = sortAggregatedRows(aggregateByDimension(rows, 'year'), 'year', 'netRevenueUsd', 'default');
 
   return (
-    <PageContainer
-      title="首页概览"
-      description="从 2023 至 2025 年的全量原始订单数据出发，动态汇总经营规模、盈利能力和年度变化趋势。"
-    >
+    <PageContainer title="首页概览">
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} xl={6}>
-          <KpiCard title="总订单数" value={formatNumber(total.orders)} description="基于原始 CSV 动态统计全部订单记录。" />
+          <KpiCard title="总订单数" value={formatNumber(total.orders)} />
         </Col>
         <Col xs={24} sm={12} xl={6}>
-          <KpiCard title="总销量" value={formatNumber(total.unitsSold)} description="累计销量反映整体市场出货规模。" />
+          <KpiCard title="总销量" value={formatNumber(total.unitsSold)} />
         </Col>
         <Col xs={24} sm={12} xl={6}>
-          <KpiCard title="总净收入" value={formatCurrency(total.netRevenueUsd)} description="扣除折扣后的实际收入规模。" />
+          <KpiCard title="总净收入" value={formatCurrency(total.netRevenueUsd)} />
         </Col>
         <Col xs={24} sm={12} xl={6}>
-          <KpiCard title="总利润 / 利润率" value={`${formatCurrency(total.profitUsd)} / ${formatPercent(total.totalProfitMarginPct)}`} description="同时观察利润绝对值和整体盈利效率。" />
+          <KpiCard title="总利润 / 利润率" value={`${formatCurrency(total.profitUsd)} / ${formatPercent(total.totalProfitMarginPct)}`} />
         </Col>
       </Row>
 
-      <ChartCard title="年度净收入与利润趋势" description="按年份动态聚合净收入与利润，帮助观察业务增长节奏。">
+      <ChartCard title="年度净收入与利润趋势">
         <EChart option={buildAnnualTrendOption(annualRows)} />
       </ChartCard>
 
-      <ChartCard title="年度聚合数据表" description="图表下方同步展示聚合结果，便于做课堂展示与复核。">
+      <ChartCard title="年度聚合数据表">
         <AggregatedDataTable rows={annualRows} pageSize={10} />
       </ChartCard>
 
