@@ -51,13 +51,13 @@ export function BusinessDimensionPage({ rows, options }: BusinessDimensionPagePr
   return (
     <PageContainer
       title="业务维度分析"
-      description="聚焦销售渠道、产品品类和地区市场，比较不同业务单元的收入、利润与利润率差异。"
+      description="从销售渠道、产品品类和地区市场三个维度，对比不同业务单元的收入、利润及利润率表现。"
     >
       <FilterBar filters={filters} options={options} onChange={setFilters} />
 
       <ChartCard
         title="核心业务维度对比"
-        description="可切换维度页签与排序指标，快速查看高规模与高效率业务单元的差异。"
+        description="不同业务维度下的收入规模、利润贡献与利润率表现存在差异，可用于识别重点业务单元。"
         extra={
           <Segmented
             options={SORT_OPTIONS}
@@ -78,12 +78,12 @@ export function BusinessDimensionPage({ rows, options }: BusinessDimensionPagePr
         <EChart option={chartOption} />
       </ChartCard>
 
-      <ChartCard title="业务维度聚合数据表" description="下表与当前页签、排序和筛选状态保持同步。">
+      <ChartCard title="业务维度聚合数据表" description="下表列示当前维度、排序方式和筛选条件下的聚合结果。">
         <AggregatedDataTable rows={aggregatedRows} pageSize={10} />
       </ChartCard>
 
       <InsightCard
-        title="业务洞察"
+        title="维度结论"
         content={generateBusinessDimensionInsight(aggregatedRows, activeTab as DimensionKey, sortMetric)}
       />
     </PageContainer>

@@ -21,7 +21,7 @@ export function OverviewPage({ rows }: OverviewPageProps) {
   return (
     <PageContainer
       title="首页概览"
-      description="从 2023 至 2025 年的全量原始订单数据出发，动态汇总经营规模、盈利能力和年度变化趋势。"
+      description="基于 2023—2025 年原始订单数据，汇总展示经营规模、盈利表现及年度变化趋势。"
     >
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} xl={6}>
@@ -38,17 +38,17 @@ export function OverviewPage({ rows }: OverviewPageProps) {
         </Col>
       </Row>
 
-      <ChartCard title="年度净收入与利润趋势" description="按年份动态聚合净收入与利润，帮助观察业务增长节奏。">
+      <ChartCard title="年度净收入与利润趋势" description="按年份聚合净收入与利润，用于观察经营规模与利润变化趋势。">
         <EChart option={buildAnnualTrendOption(annualRows)} />
       </ChartCard>
 
-      <ChartCard title="年度聚合数据表" description="图表下方同步展示聚合结果，便于做课堂展示与复核。">
+      <ChartCard title="年度聚合数据表" description="年度汇总数据如下，用于补充展示趋势图中的具体指标。">
         <AggregatedDataTable rows={annualRows} pageSize={10} />
       </ChartCard>
 
       <InsightCard
         title="经营结论"
-        content="2023—2025 年净收入和利润整体呈增长趋势，但 2025 年增速相比 2024 年有所放缓，说明业务规模仍在扩大，但增长动能有所减弱。"
+        content="2023—2025 年净收入与利润保持增长，整体经营规模持续扩大；但 2025 年增幅较 2024 年有所收窄，后续需关注增长动能变化。"
       />
     </PageContainer>
   );

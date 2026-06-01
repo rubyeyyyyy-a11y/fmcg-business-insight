@@ -157,32 +157,32 @@ export function PromotionProfitDiagnosisPage({
   return (
     <PageContainer
       title="促销利润诊断"
-      description="Promotion Profit Diagnosis：基于原始 CSV 动态拆解折扣、营销、成本与利润的关系，判断促销增长到底是表面繁荣，还是有效盈利。"
+      description="本页面围绕“高折扣与高营销是否真正转化为利润”展开分析，通过销售规模、利润率、成本拆解和促销 ROI 判断促销活动的实际经营价值。"
     >
       <Card className="chart-card" bordered={false} title="问题说明">
         <Paragraph className="chart-card__description">
-          本页面用于回答一个核心问题：高折扣和高营销投入是否真的换来了有效利润。系统不会只看销量和销售额，而是进一步拆解折扣让利、营销支出、商品成本、物流成本和最终利润，判断促销是带来真金白银，还是只制造了表面繁荣。
+          本页面围绕高折扣与高营销投入是否真正转化为利润展开分析，结合销售规模、利润率、成本拆解和促销 ROI，评估促销活动的实际经营价值。
         </Paragraph>
       </Card>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} xl={8}>
-          <KpiCard title="总销售额" value={formatCurrency(total.grossSalesUsd)} description="观察促销前口径下的总体销售规模。" />
+          <KpiCard title="总销售额" value={formatCurrency(total.grossSalesUsd)} description="反映当前筛选条件下的整体销售规模。" />
         </Col>
         <Col xs={24} sm={12} xl={8}>
-          <KpiCard title="总净收入" value={formatCurrency(total.netRevenueUsd)} description="扣除折扣后的真实收入表现。" />
+          <KpiCard title="总净收入" value={formatCurrency(total.netRevenueUsd)} description="反映扣除折扣后的实际收入规模。" />
         </Col>
         <Col xs={24} sm={12} xl={8}>
-          <KpiCard title="总利润" value={formatCurrency(total.profitUsd)} description="促销活动最终沉淀下来的利润。" />
+          <KpiCard title="总利润" value={formatCurrency(total.profitUsd)} description="反映促销活动最终形成的利润表现。" />
         </Col>
         <Col xs={24} sm={12} xl={8}>
-          <KpiCard title="整体利润率" value={formatPercent(total.totalProfitMarginPct)} description="收入增长是否同步转化为盈利效率。" />
+          <KpiCard title="整体利润率" value={formatPercent(total.totalProfitMarginPct)} description="用于判断收入规模是否同步转化为利润效率。" />
         </Col>
         <Col xs={24} sm={12} xl={8}>
           <KpiCard title="促销投入" value={formatCurrency(total.promoInvestmentUsd)} description="折扣让利与营销支出的合计投入。" />
         </Col>
         <Col xs={24} sm={12} xl={8}>
-          <KpiCard title="促销ROI" value={formatMetricValue('promoRoi', total.promoRoi)} description="每一单位促销投入换回了多少利润。" />
+          <KpiCard title="促销ROI" value={formatMetricValue('promoRoi', total.promoRoi)} description="用于衡量单位促销投入对应的利润回报。" />
         </Col>
       </Row>
 
@@ -190,7 +190,7 @@ export function PromotionProfitDiagnosisPage({
 
       <ChartCard
         title="表面繁荣：折扣是否拉动销售规模？"
-        description="观察不同折扣区间下的总销售额和销量变化，判断促销是否确实带来规模增长。"
+        description="对比不同折扣区间下的总销售额与销量，观察折扣力度对销售规模的拉动效果。"
       >
         {hasData ? (
           <EChart option={buildPromotionScaleOption(sortedDiscountRows)} />
@@ -201,7 +201,7 @@ export function PromotionProfitDiagnosisPage({
 
       <ChartCard
         title="利润效率：收入增长是否同步转化为利润？"
-        description="对比不同折扣区间下的净收入和总体利润率，判断促销带来的收入是否真正转化为盈利能力。"
+        description="对比不同折扣区间下的净收入与总体利润率，判断销售规模增长是否同步带来利润效率提升。"
       >
         {hasData ? (
           <EChart option={buildPromotionProfitEfficiencyOption(sortedDiscountRows)} />
@@ -211,8 +211,8 @@ export function PromotionProfitDiagnosisPage({
       </ChartCard>
 
       <ChartCard
-        title="利润拆账：销售额最后被哪些成本吃掉？"
-        description="从总销售额开始，依次扣除折扣让利、商品成本、营销支出和物流成本，最后剩下的才是实际利润。图中的负数项表示被扣掉的金额。"
+        title="利润拆账：销售额如何转化为最终利润？"
+        description="从总销售额出发，依次扣除折扣让利、商品成本、营销支出和物流成本，展示最终利润的形成过程。"
         extra={
           <Select
             placeholder="选择折扣区间"
@@ -235,8 +235,8 @@ export function PromotionProfitDiagnosisPage({
       </ChartCard>
 
       <ChartCard
-        title="黄金区间：哪个折扣区间最值得做？"
-        description="综合利润率和促销 ROI，寻找销售规模和利润效率之间相对平衡的折扣区间。"
+        title="黄金区间：哪个折扣区间更具投入价值？"
+        description="综合比较不同折扣区间的总体利润率与促销 ROI，识别销售规模与利润效率相对均衡的折扣区间。"
       >
         {hasData ? (
           <EChart option={buildPromotionGoldenZoneOption(sortedDiscountRows)} />
@@ -247,7 +247,7 @@ export function PromotionProfitDiagnosisPage({
 
       <InsightCard title="诊断结论" content={diagnosisContent} />
 
-      <ChartCard title="折扣区间利润诊断明细" description="下表同步展示各折扣区间的规模、利润、投入与回报表现。">
+      <ChartCard title="折扣区间利润诊断明细" description="下表列示各折扣区间的销售规模、利润表现及投入回报结果。">
         <Table
           rowKey={(row) => row.dimension}
           columns={TABLE_COLUMNS}

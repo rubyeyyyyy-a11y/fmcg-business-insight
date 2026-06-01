@@ -47,7 +47,7 @@ export function DataExplorerPage({ rows, options }: DataExplorerPageProps) {
   return (
     <PageContainer
       title="数据探索器"
-      description="基于原始 CSV 实时筛选、分组和聚合，自由组合维度、指标、图表类型，完成课堂分析展示。"
+      description="用户可按需选择分析维度和指标，系统将基于原始数据实时生成图表与聚合表格。"
     >
       <div className="explorer-layout">
         <Card className="explorer-panel" bordered={false}>
@@ -100,15 +100,15 @@ export function DataExplorerPage({ rows, options }: DataExplorerPageProps) {
         <div className="explorer-main">
           <ChartCard
             title="动态聚合图表"
-            description="主流程始终基于 `/data/fmcg_sales_cleaned_2023_2025.csv` 原始订单数据，不依赖静态汇总表。"
+            description="该模块用于支持灵活的数据探索与对比分析，适合验证不同业务维度下的指标差异。"
           >
             {hasData ? <EChart option={buildExplorerChartOption(aggregatedRows, dimension, metric, chartType)} /> : <Empty description="当前筛选条件下暂无数据" className="chart-empty" />}
           </ChartCard>
-          <InsightCard title="自动分析结论" content={generateExplorerInsight(aggregatedRows, dimension, metric)} />
+          <InsightCard title="分析结论" content={generateExplorerInsight(aggregatedRows, dimension, metric)} />
         </div>
       </div>
 
-      <ChartCard title="聚合结果表格" description="表格同步展示当前维度、指标、排序方式和筛选条件下的结果。">
+      <ChartCard title="聚合结果表格" description="下表列示当前维度、指标、排序方式和筛选条件下的聚合结果。">
         <AggregatedDataTable rows={aggregatedRows} pageSize={10} />
       </ChartCard>
     </PageContainer>
